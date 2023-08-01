@@ -1,0 +1,42 @@
+' 3°'
+@startuml Container
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title "digital Wallet Full Cycle"
+
+Person(client, "Client", "Digital Wallet User")
+System_Ext(payment_gateway, "Payment Gateway", "Payment Processor")
+
+' Faz parte do nosso sistema'
+System_Boundary(digital_wallet, "Digital Wallet") {
+    Container(spa, "SPA", "React", "Digital Wallet Web App")
+    Container(wallet_core, "Wallet Core", "Ts", "Wallet Core is responsible for the transactions")
+    Container(ballance_service, "Balance Microsservice", "Ts", "Returns customer ballance")
+    Container(statment_service, "Statment Microsservice", "Ts", "Returns customer statment")
+    Container(payment_acl, "Payment ACL", "Ts", "AntiCorruption Layer for Payment Gateway")
+
+    ContainerDb(wallet_core_db, "Wallet DB", "MySql")
+    Rel(wallet_core, wallet_core_db, "Uses", "MySql Driver")
+
+    ContainerDb(ballance_db, "Balance Db", "MySql")
+    Rel(ballance_service, ballance_db, "Uses", "MySql Driver")
+
+
+    ContainerDb(statment_db, "Statment Db", "MySql")
+    Rel(statment_service, statment_db, "Uses", "MySql Driver")
+
+
+    ContainerDb(payment_acl_db, "Payment ACL Db", "MySql")
+    Rel(payment_acl, payment_acl_db, "Uses", "MySql Driver")
+
+    Rel(client, spa, "Uses", "HTTPS")
+    Rel(spa, wallet_core, "Uses", "JSON/HTTPS")
+    Rel(spa, ballance_service, "Uses", "JSON/HTTPS")
+    Rel(spa, statment_service, "Uses", "JSON/HTTPS")
+
+    Rel(wallet_core, payment_acl, "Uses", "JSON/HTTPS")
+    Rel(payment_acl, payment_gateway, "Uses", "JSON/HTTP")
+
+}
+
+@enduml
