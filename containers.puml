@@ -1,6 +1,7 @@
 ' 3°'
 @startuml Container
 !include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+AddRelTag("async", $lineStyle = DashedLine())
 
 title "digital Wallet Full Cycle"
 
@@ -36,6 +37,9 @@ System_Boundary(digital_wallet, "Digital Wallet") {
 
     Rel(wallet_core, payment_acl, "Uses", "JSON/HTTPS")
     Rel(payment_acl, payment_gateway, "Uses", "JSON/HTTP")
+
+    Rel(wallet_core, ballance_service, "Uses", "Topic", $tags = "async")
+    Rel(wallet_core, statment_service, "Uses", "Topic", $tags = "async")
 
 }
 
